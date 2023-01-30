@@ -1,9 +1,6 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank">Made with Nest</a>
-</p>
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+<a href="http://nestjs.com/" target="blank">Made with Nest</a> | [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
 ## Installation
 
@@ -36,6 +33,7 @@ $ pnpm run test:e2e
 # test coverage
 $ pnpm run test:cov
 ```
+
 ## License
 
 Nest is [MIT licensed](LICENSE).
