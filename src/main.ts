@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import helmet from 'helmet';
 import * as cookieParser from 'cookie-parser';
 import * as session from 'express-session';
-
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './components/app/app.module';
 
 async function bootstrap() {
@@ -25,6 +25,14 @@ async function bootstrap() {
       store: app.get('SESSION_STORE'),
     }),
   );
+
+  const config = new DocumentBuilder()
+    .setTitle('Portfolio REST api')
+    .setVersion('1.0')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+
+  SwaggerModule.setup('api/docs', app, document);
 
   await app.listen(process.env.PORT);
 
