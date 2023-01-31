@@ -1,11 +1,11 @@
-name: GitHub Actions Demo
+name: Unit-tests
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 on:
   pull_request:
     branches:
       - main
 jobs:
-  Explore-GitHub-Actions:
+  Unit-tests:
     runs-on: ubuntu-20.04
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
@@ -17,12 +17,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
-
-      - name: Start MongoDB
-        uses: supercharge/mongodb-github-action@1.8.0
-        with:
-          mongodb-version: 5.0
-          mongodb-db: nest
 
       - uses: pnpm/action-setup@v2
         name: Install pnpm
