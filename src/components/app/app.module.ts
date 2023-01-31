@@ -2,10 +2,10 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserModule } from '../user/user.module';
-import { AuthModule } from '../auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
-import { SessionModule } from '../common/session.module';
+import { SessionModule } from '@components/common/session.module';
+import { UserModule } from '@components/user/user.module';
+import { AuthModule } from '@components/auth/auth.module';
 
 @Module({
   imports: [
