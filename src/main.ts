@@ -28,9 +28,7 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('Portfolio REST api')
-    .setDescription('Api for portfolio server')
     .setVersion('1.0')
-    .addTag('common')
     .build();
   const document = SwaggerModule.createDocument(app, config);
 
