@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { UserDto } from './dto/user.dto';
-import { User } from './schemas/user.schema';
 import { UserRepository } from './user.repository';
 import * as bcrypt from 'bcrypt';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { User } from './schemas/user.schema';
 
 @Injectable()
 export class UserService {
@@ -20,7 +21,7 @@ export class UserService {
     return this.userRepository.find({});
   }
 
-  async createUser(userData: UserDto): Promise<User> {
+  async createUser(userData: CreateUserDto): Promise<User> {
     const data = { ...userData };
 
     data.password = await bcrypt.hash(userData.password, 3);
@@ -28,8 +29,9 @@ export class UserService {
     return this.userRepository.create(data);
   }
 
-  async updateUser(_id: string, userData: UserDto): Promise<User> {
-    return this.userRepository.update({ _id }, userData);
+  async updateUser(userData: UpdateUserDto): Promise<User> {
+    const { _id, ...data } = userData;
+    return this.userRepository.update({ _id }, data);
   }
 
   async deleteUser(_id: string): Promise<boolean> {
