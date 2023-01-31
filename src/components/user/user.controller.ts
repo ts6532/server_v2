@@ -7,37 +7,38 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { UserDto } from './dto/user.dto';
-import { UserWithIdDto } from './dto/user_with_id.dto';
-import { User } from './schemas/user.schema';
 import { UserService } from './user.service';
 
 @Controller()
 export class UserController {
   constructor(private userService: UserService) {}
+
   @Get('users')
-  async getUsers(): Promise<User[]> {
-    return this.userService.getUsers();
+  async getUsers() {
+    const res = await this.userService.getUsers();
+    return res.map((el) => new UserDto(el));
   }
 
   @Get('user')
-  async getUser(@Query() query: { _id: string }): Promise<User> {
-    return this.userService.getUserById(query._id);
+  async getUser(@Query('_id') _id: string) {
+    return new UserDto(await this.userService.getUserById(_id));
   }
 
   @Post('user')
-  async createUser(@Body() userData: UserDto) {
-    return this.userService.createUser(userData);
+  async createUser(@Body() userData: CreateUserDto) {
+    return new UserDto(await this.userService.createUser(userData));
   }
 
   @Put('user')
-  async updateUser(@Body() userData: UserWithIdDto) {
-    const { _id, ...data } = userData;
-    return this.userService.updateUser(_id, data);
+  async updateUser(@Body() userData: UpdateUserDto) {
+    return new UserDto(await this.userService.updateUser(userData));
   }
 
   @Delete('user')
-  async deleteUser(@Body() data: { _id: string }) {
-    return this.userService.deleteUser(data._id);
+  async deleteUser(@Body('_id') _id: string) {
+    return this.userService.deleteUser(_id);
   }
 }
