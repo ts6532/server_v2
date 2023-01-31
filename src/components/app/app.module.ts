@@ -7,6 +7,7 @@ import { SessionModule } from '@components/common/session.module';
 import { UserModule } from '@components/user/user.module';
 import { AuthModule } from '@components/auth/auth.module';
 import { CategoriesModule } from '@components/categories/categories.module';
+import { ProjectsModule } from '@components/projects/projects.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { CategoriesModule } from '@components/categories/categories.module';
     UserModule,
     AuthModule,
     CategoriesModule,
+    ProjectsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
