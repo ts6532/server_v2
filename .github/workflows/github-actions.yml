@@ -4,10 +4,6 @@ on: [push]
 jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16.x]
-        mongodb-version: ['6.0']
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
 
@@ -17,12 +13,13 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 16
 
       - name: Start MongoDB
         uses: supercharge/mongodb-github-action@1.8.0
         with:
-          mongodb-version: ${{ matrix.mongodb-version }}
+          mongodb-version: 6
+          mongodb-db: nest
 
       - uses: pnpm/action-setup@v2
         name: Install pnpm
