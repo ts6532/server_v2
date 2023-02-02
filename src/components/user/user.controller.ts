@@ -36,12 +36,14 @@ export class UserController {
   @UseGuards(SessionAuthGuard)
   @Post()
   async createUser(@Body() userData: CreateUserDto) {
+    console.log(userData);
     return new UserDto(await this.userService.createUser(userData));
   }
 
   @UseGuards(SessionAuthGuard)
   @Put()
   async updateUser(@Body() userData: UpdateUserDto) {
+    console.log('userData', userData);
     return new UserDto(await this.userService.updateUser(userData));
   }
 

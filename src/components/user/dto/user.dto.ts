@@ -13,7 +13,7 @@ export class UserDto {
 
   constructor(user?: User) {
     if (user) {
-      this._id = user._id.toString();
+      this._id = user._id?.toString();
       this.email = user.email;
       this.role = user.role;
       this.isActivated = user.isActivated;
