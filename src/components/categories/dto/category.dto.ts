@@ -7,11 +7,11 @@ export class CategoryDto {
 
   description?: string;
 
-  constructor(user?: Category) {
-    if (user) {
-      this._id = user._id.toString();
-      this.name = user.name;
-      if (user.description) this.description = user.description;
+  constructor(data?: Category) {
+    if (data) {
+      this._id = data._id.toString();
+      this.name = data.name;
+      if (data.description) this.description = data.description;
     }
   }
 }
