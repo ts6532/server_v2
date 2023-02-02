@@ -11,9 +11,14 @@ import { PreferencesModule } from '@components/preferences/preferences.module';
 import { SessionModule } from '@src/common/session.module';
 import { UploadModule } from '@components/upload/upload.module';
 import { MulterModule } from '@nestjs/platform-express';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join, resolve } from 'path';
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(resolve(), 'uploads'),
+    }),
     ConfigModule.forRoot({ isGlobal: true }),
     SessionModule,
     MongooseModule.forRoot(process.env.CONNECT_DB),
