@@ -42,7 +42,7 @@ export class ProjectsController {
   @UseGuards(SessionAuthGuard)
   @Put()
   async update(@Body() updateProjectDto: UpdateProjectDto) {
-    return this.projectsService.update(updateProjectDto);
+    return new ProjectDto(await this.projectsService.update(updateProjectDto)) ;
   }
 
   @UseGuards(SessionAuthGuard)

@@ -3,7 +3,8 @@
   "rootDir": "./../../",
   "moduleNameMapper": {
     "^@components/(.*)": "<rootDir>/src/components/$1",
-    "^@database/(.*)": "<rootDir>/src/database/$1"
+    "^@database/(.*)": "<rootDir>/src/database/$1",
+    "^@src/(.*)": "<rootDir>/src/$1"
   },
   "testEnvironment": "node",
   "testRegex": ".e2e-spec.ts$",
