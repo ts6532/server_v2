@@ -7,11 +7,11 @@ export abstract class EntityRepository<T extends Document> {
     filterQuery: FilterQuery<T>,
     options?: Record<string, unknown>,
   ): Promise<T | null> {
-    return this.entityModel.findOne(filterQuery, { ...options }).;
+    return this.entityModel.findOne(filterQuery, { ...options });
   }
 
   async find(filterQuery: FilterQuery<T>): Promise<T[] | null> {
-    return this.entityModel.find(filterQuery).;
+    return this.entityModel.find(filterQuery);
   }
 
   async create(data: unknown): Promise<T> {
@@ -23,8 +23,7 @@ export abstract class EntityRepository<T extends Document> {
     filterQuery: FilterQuery<T>,
     data: UpdateQuery<unknown>,
   ): Promise<T | null> {
-    return this.entityModel
-      .findByIdAndUpdate(filterQuery, data, { new: true });
+    return this.entityModel.findByIdAndUpdate(filterQuery, data, { new: true });
   }
 
   async deleteMany(filterQuery: FilterQuery<T>): Promise<boolean> {
