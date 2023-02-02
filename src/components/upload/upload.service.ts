@@ -3,7 +3,7 @@ import * as path from 'path';
 import { mkdir, readdir, unlink, writeFile } from 'fs/promises';
 import * as uuid from 'uuid';
 import * as fs from 'fs';
-import { IMessage } from '@src/types/IMessage';
+import { IMessage } from '@src/types/general';
 
 @Injectable()
 export class UploadService {

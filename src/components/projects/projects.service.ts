@@ -1,30 +1,52 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { IEntity, IMessage } from '@src/types/general';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { ProjectRepository } from './projects.repository';
+import { ProjectDocument } from './schemas/project.schema';
 
 @Injectable()
 export class ProjectsService {
   constructor(private projectsRepository: ProjectRepository) {}
-  
-  async create(createProjectDto: CreateProjectDto) {
+
+  async getPopulatedProject(_id: string) {
+    return this.projectsRepository.getPopulatedProject(_id);
+  }
+
+  async create(createProjectDto: CreateProjectDto): Promise<ProjectDocument> {
     return this.projectsRepository.create(createProjectDto);
   }
 
-  async findAll() {
+  async findAll(): Promise<ProjectDocument[]> {
     return this.projectsRepository.find({});
   }
 
-  async findOne(_id: string) {
+  async findOne(_id: string): Promise<ProjectDocument> {
     return this.projectsRepository.findOne({ _id });
   }
 
-  async update(updateProjectDto: UpdateProjectDto) {
+  async update(updateProjectDto: UpdateProjectDto): Promise<ProjectDocument> {
     const { _id, ...data } = updateProjectDto;
-    return this.projectsRepository.update({ _id }, data);
+
+    try {
+      return await this.projectsRepository.update({ _id }, data);
+    } catch (error) {
+      throw new HttpException(
+        { message: 'Ошибка при обновлении проекта', error },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
-  async remove(_id: string) {
-    return this.projectsRepository.deleteMany({ _id });
+  async remove(_id: string): Promise<IMessage> {
+    try {
+      await this.projectsRepository.deleteMany({ _id });
+      return { message: 'Проект успешно удален' };
+    } catch (error) {
+      throw new HttpException(
+        { message: 'Ошибка при удалении проекта', error },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }

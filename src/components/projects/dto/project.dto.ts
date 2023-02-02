@@ -1,3 +1,4 @@
+import { CategoryDto } from '@components/categories/dto/category.dto';
 import { Project } from '../schemas/project.schema';
 
 export class ProjectDto {
@@ -15,7 +16,7 @@ export class ProjectDto {
 
   content?: object;
 
-  category?: string;
+  category?: string | CategoryDto;
 
   constructor(project?: Project) {
     if (project) {
