@@ -9,12 +9,19 @@ import { ProjectDocument } from './schemas/project.schema';
 export class ProjectsService {
   constructor(private projectsRepository: ProjectRepository) {}
 
-  async getPopulatedProject(_id: string) {
+  async getPopulatedProject(_id: string): Promise<ProjectDocument> {
     return this.projectsRepository.getPopulatedProject(_id);
   }
 
   async create(createProjectDto: CreateProjectDto): Promise<ProjectDocument> {
-    return this.projectsRepository.create(createProjectDto);
+    try {
+      return await this.projectsRepository.create(createProjectDto);
+    } catch (error) {
+      throw new HttpException(
+        { message: 'Ошибка при удалении проекта', error },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   async findAll(): Promise<ProjectDocument[]> {
