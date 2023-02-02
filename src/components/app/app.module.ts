@@ -9,6 +9,8 @@ import { CategoriesModule } from '@components/categories/categories.module';
 import { ProjectsModule } from '@components/projects/projects.module';
 import { PreferencesModule } from '@components/preferences/preferences.module';
 import { SessionModule } from '@src/common/session.module';
+import { UploadModule } from '@components/upload/upload.module';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
@@ -20,6 +22,10 @@ import { SessionModule } from '@src/common/session.module';
     CategoriesModule,
     ProjectsModule,
     PreferencesModule,
+    MulterModule.register({
+      dest: './uploads/images',
+    }),
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],
