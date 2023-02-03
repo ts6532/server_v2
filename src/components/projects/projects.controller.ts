@@ -1,12 +1,12 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Param,
+  Controller,
   Delete,
-  UseGuards,
+  Get,
+  Param,
+  Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { CreateProjectDto } from './dto/create-project.dto';
@@ -22,26 +22,23 @@ import { PopulatedProjectDto } from './dto/populated-project.dto';
 export class ProjectsController {
   constructor(private readonly projectsService: ProjectsService) {}
 
-  @Get('full/:_id')
+  @Get('full/:alias')
   async getPopulatedProject(
-    @Param(':_id') _id: string,
+    @Param(':alias') alias: string,
   ): Promise<PopulatedProjectDto> {
-    return new PopulatedProjectDto(
-      await this.projectsService.getPopulatedProject(_id),
-    );
+    return this.projectsService.getPopulatedProject(alias);
   }
 
   @UseGuards(SessionAuthGuard)
   @Get()
   async findAll(): Promise<ProjectDto[]> {
-    const res = await this.projectsService.findAll();
-    return res.map((el) => new ProjectDto(el));
+    return await this.projectsService.findAll();
   }
 
   @UseGuards(SessionAuthGuard)
   @Get(':_id')
   async findOne(@Param('_id') _id: string): Promise<ProjectDto> {
-    return new ProjectDto(await this.projectsService.findOne(_id));
+    return await this.projectsService.findOne(_id);
   }
 
   @UseGuards(SessionAuthGuard)
@@ -49,7 +46,7 @@ export class ProjectsController {
   async create(
     @Body() createProjectDto: CreateProjectDto,
   ): Promise<ProjectDto> {
-    return new ProjectDto(await this.projectsService.create(createProjectDto));
+    return await this.projectsService.create(createProjectDto);
   }
 
   @UseGuards(SessionAuthGuard)
@@ -57,7 +54,7 @@ export class ProjectsController {
   async update(
     @Body() updateProjectDto: UpdateProjectDto,
   ): Promise<ProjectDto> {
-    return new ProjectDto(await this.projectsService.update(updateProjectDto));
+    return await this.projectsService.update(updateProjectDto);
   }
 
   @UseGuards(SessionAuthGuard)

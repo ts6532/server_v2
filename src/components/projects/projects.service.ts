@@ -1,42 +1,50 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { IMessage } from '@src/types/general';
-import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { ProjectRepository } from './projects.repository';
-import { ProjectDocument } from './schemas/project.schema';
+import { PopulatedProjectDto } from '@components/projects/dto/populated-project.dto';
+import { ProjectDto } from '@components/projects/dto/project.dto';
+import { CreateProjectDto } from '@components/projects/dto/create-project.dto';
 
 @Injectable()
 export class ProjectsService {
   constructor(private projectsRepository: ProjectRepository) {}
 
-  async getPopulatedProject(_id: string): Promise<ProjectDocument> {
-    return this.projectsRepository.getPopulatedProject(_id);
+  async getPopulatedProject(alias: string): Promise<PopulatedProjectDto> {
+    return new PopulatedProjectDto(
+      await this.projectsRepository.getPopulatedProject(alias),
+    );
   }
 
-  async create(createProjectDto: CreateProjectDto): Promise<ProjectDocument> {
+  async findAll(): Promise<ProjectDto[]> {
+    const res = await this.projectsRepository.find({});
+    return res.map((el) => new ProjectDto(el));
+  }
+
+  async findOne(_id: string): Promise<ProjectDto> {
+    return new ProjectDto(await this.projectsRepository.findOne({ _id }));
+  }
+
+  async create(createProjectDto: CreateProjectDto): Promise<ProjectDto> {
     try {
-      return await this.projectsRepository.create(createProjectDto);
-    } catch (error) {
+      return new ProjectDto(
+        await this.projectsRepository.create(createProjectDto),
+      );
+    } catch (e) {
       throw new HttpException(
-        { message: 'Ошибка при удалении проекта', error },
+        'Ошибка при создании проекта',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
 
-  async findAll(): Promise<ProjectDocument[]> {
-    return this.projectsRepository.find({});
-  }
-
-  async findOne(_id: string): Promise<ProjectDocument> {
-    return this.projectsRepository.findOne({ _id });
-  }
-
-  async update(updateProjectDto: UpdateProjectDto): Promise<ProjectDocument> {
+  async update(updateProjectDto: UpdateProjectDto): Promise<ProjectDto> {
     const { _id, ...data } = updateProjectDto;
 
     try {
-      return await this.projectsRepository.update({ _id }, data);
+      return new ProjectDto(
+        await this.projectsRepository.update({ _id }, data),
+      );
     } catch (error) {
       throw new HttpException(
         { message: 'Ошибка при обновлении проекта', error },

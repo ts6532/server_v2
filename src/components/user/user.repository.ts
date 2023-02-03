@@ -26,6 +26,6 @@ export class UserRepository extends EntityRepository<UserDocument> {
       }
     }
 
-    init().then(() => console.log('Test user created'));
+    init();
   }
 }
