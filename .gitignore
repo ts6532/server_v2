@@ -10,9 +10,7 @@ pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
-/node_modules
 /uploads
-.env
 yarn.lock
 package-lock.json
 # OS

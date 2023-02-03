@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { UserRepository } from './user.repository';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './schemas/user.schema';
-import { Types } from 'mongoose';
+import { IMessage } from '@src/types/general';
 
 @Injectable()
 export class UserService {
@@ -23,20 +23,37 @@ export class UserService {
   }
 
   async createUser(userData: CreateUserDto): Promise<User> {
-    const data = { ...userData };
-
-    data.password = await bcrypt.hash(userData.password, 3);
-    
-    return await this.userRepository.create(data);
+    try {
+      const data = { ...userData };
+      data.password = await bcrypt.hash(userData.password, 3);
+      return await this.userRepository.create(data);
+    } catch (e) {
+      throw new HttpException('Ошибка при создании пользователя', e);
+    }
   }
 
-  async updateUser(userData: UpdateUserDto): Promise<User> {
-    const { _id, ...data } = userData;
-    const res = await this.userRepository.update({ _id }, data);
-    return;
+  async updateUser(userData: UpdateUserDto): Promise<IMessage> {
+    try {
+      const { _id, ...data } = userData;
+      await this.userRepository.update({ _id }, data);
+      return { message: 'Пользователь обновлен' };
+    } catch (e) {
+      throw new HttpException(
+        'Ошибка при обновлении пользователя',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
-  async deleteUser(_id: string): Promise<boolean> {
-    return this.userRepository.deleteMany({ _id });
+  async deleteUser(_id: string): Promise<IMessage> {
+    try {
+      await this.userRepository.deleteMany({ _id });
+      return { message: 'Пользователь удален' };
+    } catch (e) {
+      throw new HttpException(
+        'Ошибка при удалении пользователя',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }

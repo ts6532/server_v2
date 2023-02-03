@@ -1,7 +1,7 @@
 import { Document, FilterQuery, Model, Types, UpdateQuery } from 'mongoose';
 
 export abstract class EntityRepository<T extends Document> {
-  constructor(protected readonly entityModel: Model<T>) {}
+  protected constructor(protected readonly entityModel: Model<T>) {}
 
   createObjectId(filterQuery: FilterQuery<T>) {
     if (filterQuery['_id']) {
@@ -25,7 +25,7 @@ export abstract class EntityRepository<T extends Document> {
   }
 
   async find(filterQuery: FilterQuery<T>): Promise<T[] | null> {
-    return await this.entityModel.find({
+    return this.entityModel.find({
       ...this.createObjectId(filterQuery),
     });
   }
@@ -42,7 +42,7 @@ export abstract class EntityRepository<T extends Document> {
     filterQuery: FilterQuery<T>,
     data: UpdateQuery<unknown>,
   ): Promise<T | null> {
-    return await this.entityModel.findOneAndUpdate(
+    return this.entityModel.findOneAndUpdate(
       { ...this.createObjectId(filterQuery) },
       data,
       {

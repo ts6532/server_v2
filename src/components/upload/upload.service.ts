@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import * as path from 'path';
-import { mkdir, readdir, unlink, writeFile } from 'fs/promises';
+import { readdir, unlink, writeFile } from 'fs/promises';
 import * as uuid from 'uuid';
 import * as fs from 'fs';
 import { IMessage } from '@src/types/general';
@@ -52,23 +52,23 @@ export class UploadService {
   }
 
   async deleteImage(filename: string): Promise<IMessage> {
+    if (!filename) {
+      throw new HttpException(
+        { message: 'Не указанно имя фаила для удаления' },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const currentFiles = await readdir(this._filePath);
+
+    if (!currentFiles.includes(filename))
+      throw new HttpException(
+        { message: 'Такого фаила не существует' },
+        HttpStatus.BAD_REQUEST,
+      );
+
     try {
-      if (!filename)
-        throw new HttpException(
-          { message: 'Не указанно имя фаила для удаления' },
-          HttpStatus.BAD_REQUEST,
-        );
-
-      const currentFiles = await readdir(this._filePath);
-
-      if (!currentFiles.includes(filename))
-        throw new HttpException(
-          { message: 'Такого фаила не существует' },
-          HttpStatus.BAD_REQUEST,
-        );
-
       await unlink(path.join(this._filePath, filename));
-
       return { message: 'Фаил успешно удален' };
     } catch (error) {
       throw new HttpException(

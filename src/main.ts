@@ -2,19 +2,11 @@ import { NestFactory } from '@nestjs/core';
 import helmet from 'helmet';
 import * as cookieParser from 'cookie-parser';
 import * as session from 'express-session';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { AppModule } from './components/app/app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { AppModule } from '@components/app/app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
-
-  app.setGlobalPrefix('api');
-  // app.useGlobalPipes(
-  //   new ValidationPipe({
-  //     whitelist: true,
-  //   }),
-  // );
 
   app.use(cookieParser(process.env.COOKIE_SALT));
 
@@ -43,7 +35,5 @@ async function bootstrap() {
   SwaggerModule.setup('api/docs', app, document);
 
   await app.listen(process.env.PORT);
-
-  console.log(`...listen on port ${process.env.PORT}`);
 }
-bootstrap();
+bootstrap().then(() => console.log(`...listen on port ${process.env.PORT}`));

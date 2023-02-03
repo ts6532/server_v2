@@ -4,8 +4,8 @@ import {
   Controller,
   Delete,
   Get,
-  Param,
   Post,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -41,8 +41,8 @@ export class UploadController {
   }
 
   @UseGuards(SessionAuthGuard)
-  @Delete(':_name')
-  async deleteUser(@Param('name') name: string) {
+  @Delete()
+  async deleteImage(@Query('name') name: string) {
     return this.uploadService.deleteImage(name);
   }
 }

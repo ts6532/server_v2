@@ -8,7 +8,7 @@ export class UserRepository extends EntityRepository<UserDocument> {
   constructor(@InjectModel(User.name) userModel: Model<UserDocument>) {
     super(userModel);
 
-    // инициализируем первого тестового пользователя
+    // инициализация первого тестового пользователя
     async function init() {
       const users = await userModel.find({});
 
@@ -26,6 +26,6 @@ export class UserRepository extends EntityRepository<UserDocument> {
       }
     }
 
-    init();
+    init().then(() => console.log('Test user created'));
   }
 }
