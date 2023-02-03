@@ -24,7 +24,7 @@ export class ProjectsController {
 
   @Get('full/:alias')
   async getPopulatedProject(
-    @Param(':alias') alias: string,
+    @Param('alias') alias: string,
   ): Promise<PopulatedProjectDto> {
     return this.projectsService.getPopulatedProject(alias);
   }

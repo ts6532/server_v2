@@ -13,15 +13,15 @@ export class PreferencesController {
 
   @UseGuards(SessionAuthGuard)
   @Get()
-  async findOne() {
-    return new PreferencesDto(await this.preferencesService.findOne());
+  async getPreferences(): Promise<PreferencesDto> {
+    return await this.preferencesService.getPreferences();
   }
 
   @UseGuards(SessionAuthGuard)
   @Put()
-  async update(@Body() preferencesDto: PreferencesDto) {
-    return new PreferencesDto(
-      await this.preferencesService.update(preferencesDto),
-    );
+  async update(
+    @Body() preferencesDto: PreferencesDto,
+  ): Promise<PreferencesDto> {
+    return await this.preferencesService.update(preferencesDto);
   }
 }

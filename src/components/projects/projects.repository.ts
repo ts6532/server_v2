@@ -12,9 +12,12 @@ export class ProjectRepository extends EntityRepository<ProjectDocument> {
     super(userModel);
   }
 
-  async getPopulatedProject(_id: string): Promise<ProjectDocument> {
+  async getPopulatedProject(alias: string): Promise<ProjectDocument> {
     try {
-      return await this.userModel.find({ _id }).populate('category').lean();
+      return await this.userModel
+        .findOne({ alias })
+        .populate('category')
+        .lean();
     } catch (error) {
       throw new HttpException(
         'Ошибка при получении проекта',

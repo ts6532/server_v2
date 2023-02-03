@@ -4,8 +4,9 @@ import { ProjectDto } from './project.dto';
 
 export class PopulatedProjectDto extends ProjectDto {
   category?: CategoryDto;
+
   constructor(data?: Project) {
-    super();
+    super(data);
     this.category = new CategoryDto(data.category);
   }
 }

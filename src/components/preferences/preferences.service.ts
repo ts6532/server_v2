@@ -6,12 +6,14 @@ import { PreferencesRepository } from './preferences.repository';
 export class PreferencesService {
   constructor(private preferencesRepository: PreferencesRepository) {}
 
-  async findOne() {
-    return this.preferencesRepository.findOne({});
+  async getPreferences(): Promise<PreferencesDto> {
+    return new PreferencesDto(await this.preferencesRepository.findOne({}));
   }
 
   async update(preferencesDto: PreferencesDto) {
     const { _id, ...data } = preferencesDto;
-    return this.preferencesRepository.update({ _id }, data);
+    return new PreferencesDto(
+      await this.preferencesRepository.update({ _id }, data),
+    );
   }
 }

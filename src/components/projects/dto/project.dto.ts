@@ -20,7 +20,7 @@ export class ProjectDto {
 
   constructor(project?: Project) {
     if (project) {
-      this._id = project._id.toString();
+      this._id = project._id?.toString();
       this.title = project.title;
       this.alias = project.alias;
       if (project.category) this.category = project.category.toString();
