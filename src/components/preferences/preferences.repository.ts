@@ -1,7 +1,7 @@
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { EntityRepository } from '@database/entity.repository';
-import { Preferences, PreferencesDocument } from './schemas/Preferences.schema';
+import { Preferences, PreferencesDocument } from './schemas/preferences.schema';
 
 export class PreferencesRepository extends EntityRepository<PreferencesDocument> {
   constructor(

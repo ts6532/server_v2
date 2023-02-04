@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
@@ -16,15 +17,24 @@ import { ProjectDto } from './dto/project.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { IMessage } from '@src/types/general';
 import { PopulatedProjectDto } from './dto/populated-project.dto';
+import { SearchProjectDto } from '@components/projects/dto/search-project.dto';
+import { ListProjectDto } from '@components/projects/dto/list-project.dto';
 
 @ApiTags('projects')
 @Controller('projects')
 export class ProjectsController {
   constructor(private readonly projectsService: ProjectsService) {}
 
-  @Get('full/:alias')
+  @Get('list')
+  async getProjectList(
+    @Query() params: SearchProjectDto,
+  ): Promise<ListProjectDto> {
+    return this.projectsService.getProjectsList(params);
+  }
+
+  @Get('full')
   async getPopulatedProject(
-    @Param('alias') alias: string,
+    @Query('alias') alias: string,
   ): Promise<PopulatedProjectDto> {
     return this.projectsService.getPopulatedProject(alias);
   }

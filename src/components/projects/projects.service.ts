@@ -5,10 +5,18 @@ import { ProjectRepository } from './projects.repository';
 import { PopulatedProjectDto } from '@components/projects/dto/populated-project.dto';
 import { ProjectDto } from '@components/projects/dto/project.dto';
 import { CreateProjectDto } from '@components/projects/dto/create-project.dto';
+import { SearchProjectDto } from '@components/projects/dto/search-project.dto';
+import { ListProjectDto } from '@components/projects/dto/list-project.dto';
 
 @Injectable()
 export class ProjectsService {
   constructor(private projectsRepository: ProjectRepository) {}
+
+  async getProjectsList(params: SearchProjectDto): Promise<ListProjectDto> {
+    const list = await this.projectsRepository.getProjectsList(params);
+
+    return new ListProjectDto(list);
+  }
 
   async getPopulatedProject(alias: string): Promise<PopulatedProjectDto> {
     return new PopulatedProjectDto(

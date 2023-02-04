@@ -11,7 +11,6 @@ import { PreferencesDto } from './dto/preferences.dto';
 export class PreferencesController {
   constructor(private readonly preferencesService: PreferencesService) {}
 
-  @UseGuards(SessionAuthGuard)
   @Get()
   async getPreferences(): Promise<PreferencesDto> {
     return await this.preferencesService.getPreferences();

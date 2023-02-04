@@ -7,6 +7,8 @@ export class PopulatedProjectDto extends ProjectDto {
 
   constructor(data?: Project) {
     super(data);
-    this.category = new CategoryDto(data.category);
+    if (data) {
+      this.category = new CategoryDto(data.category);
+    }
   }
 }
