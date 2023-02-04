@@ -18,7 +18,6 @@ import { join, resolve } from 'path';
   imports: [
     ServeStaticModule.forRoot({
       rootPath: join(resolve(), 'uploads'),
-      serveRoot: '/',
     }),
     ConfigModule.forRoot({ isGlobal: true }),
     SessionModule,
