@@ -36,7 +36,7 @@ export class UploadService {
 
       for (const file of fileNames) {
         const image = {
-          url: `/images/${file}`,
+          url: `static/images/${file}`,
           name: file,
         };
         list.push(image);
