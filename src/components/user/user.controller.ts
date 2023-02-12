@@ -23,8 +23,7 @@ export class UserController {
 
   @Get()
   async getUsers() {
-    const res = await this.userService.getUsers();
-    return res.map((el) => new UserDto(el));
+    return this.userService.getUsers();
   }
 
   @Get(':_id')
@@ -34,13 +33,11 @@ export class UserController {
 
   @Post()
   async createUser(@Body() userData: CreateUserDto) {
-    console.log(userData);
     return this.userService.createUser(userData);
   }
 
   @Put()
   async updateUser(@Body() userData: UpdateUserDto) {
-    console.log('userData', userData);
     return this.userService.updateUser(userData);
   }
 

@@ -5,38 +5,42 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './schemas/user.schema';
 import { IMessage } from '@src/types/general';
+import { UserDto } from '@components/user/dto/user.dto';
 
 @Injectable()
 export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
 
-  async getUserById(_id: string): Promise<User> {
-    return this.userRepository.findOne({ _id });
+  async getUserById(_id: string): Promise<UserDto> {
+    return new UserDto(await this.userRepository.findOne({ _id }));
   }
 
   async getUserByEmail(email: string): Promise<User> {
-    return this.userRepository.findOne({ email });
+    return await this.userRepository.findOne({ email });
   }
 
-  async getUsers(): Promise<User[]> {
-    return this.userRepository.find({});
+  async getUsers(): Promise<UserDto[]> {
+    const res = await this.userRepository.find({});
+    return res.map((el) => new UserDto(el));
   }
 
-  async createUser(userData: CreateUserDto): Promise<User> {
+  async createUser(userData: CreateUserDto): Promise<UserDto> {
     try {
       const data = { ...userData };
       data.password = await bcrypt.hash(userData.password, 3);
-      return await this.userRepository.create(data);
+      return new UserDto(await this.userRepository.create(data));
     } catch (e) {
-      throw new HttpException('Ошибка при создании пользователя', e);
+      throw new HttpException(
+        'Ошибка при создании пользователя',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
-  async updateUser(userData: UpdateUserDto): Promise<IMessage> {
+  async updateUser(userData: UpdateUserDto): Promise<UserDto> {
     try {
       const { _id, ...data } = userData;
-      await this.userRepository.update({ _id }, data);
-      return { message: 'Пользователь обновлен' };
+      return new UserDto(await this.userRepository.update({ _id }, data));
     } catch (e) {
       throw new HttpException(
         'Ошибка при обновлении пользователя',
