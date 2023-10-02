@@ -7,8 +7,6 @@ export class UserDto {
 
   role: string;
 
-  isActivated: boolean;
-
   firstname?: string;
 
   constructor(user?: User) {
@@ -16,7 +14,6 @@ export class UserDto {
       this._id = user._id?.toString();
       this.email = user.email;
       this.role = user.role;
-      this.isActivated = user.isActivated;
       if (user.firstname) this.firstname = user.firstname;
     }
   }

@@ -21,7 +21,7 @@ export class AuthController {
     @Body() data: LoginDataDto,
     @Session() session: Record<string, any>,
     @Req() req: any,
-  ) {
+  ): Promise<{ message: string; user: string }> {
     const isValid = await this.authService.validateUser(
       data.email,
       data.password,
@@ -41,7 +41,7 @@ export class AuthController {
   }
 
   @Get('/me')
-  async checkMe(@Req() req) {
+  async checkMe(@Req() req): Promise<{ isAuth: boolean; user: string }> {
     if (req.session.isAuth) {
       return { isAuth: req.session.isAuth, user: req.session.user };
     }

@@ -25,9 +25,21 @@ export class UserService {
   }
 
   async createUser(userData: CreateUserDto): Promise<UserDto> {
+    const alreadyExist = await this.userRepository.findOne({
+      email: userData.email,
+    });
+
+    if (alreadyExist)
+      throw new HttpException(
+        'Пользователь с таким email уже существует',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+
     try {
       const data = { ...userData };
+
       data.password = await bcrypt.hash(userData.password, 3);
+
       return new UserDto(await this.userRepository.create(data));
     } catch (e) {
       throw new HttpException(
