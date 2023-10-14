@@ -4,12 +4,13 @@ import { readdir, unlink, writeFile } from 'fs/promises';
 import * as uuid from 'uuid';
 import * as fs from 'fs';
 import { IMessage } from '@src/types/general';
+import { ImageDto } from './dto/image.dto';
 
 @Injectable()
 export class UploadService {
   private readonly _filePath = path.resolve(path.resolve(), 'uploads/images');
 
-  async saveImage(file): Promise<string> {
+  async saveImage(file): Promise<ImageDto> {
     try {
       if (!fs.existsSync(this._filePath)) {
         fs.mkdirSync(this._filePath, { recursive: true });
@@ -19,7 +20,7 @@ export class UploadService {
 
       await writeFile(path.join(this._filePath, fileName), file.buffer);
 
-      return fileName;
+      return { url: `static/images/${fileName}`, fileName };
     } catch (e) {
       throw new HttpException(
         { message: 'Произошла ошибка при записи файла', error: e },
@@ -28,16 +29,16 @@ export class UploadService {
     }
   }
 
-  async getAllImages(): Promise<string[]> {
+  async getAllImages(): Promise<ImageDto[]> {
     try {
       const fileNames = await readdir(this._filePath);
 
-      const list = [];
+      const list: ImageDto[] = [];
 
-      for (const file of fileNames) {
+      for (const fileName of fileNames) {
         const image = {
-          url: `static/images/${file}`,
-          name: file,
+          url: `static/images/${fileName}`,
+          fileName: fileName,
         };
         list.push(image);
       }

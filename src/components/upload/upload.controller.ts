@@ -26,12 +26,12 @@ export class UploadController {
 
   @UseGuards(SessionAuthGuard)
   @Post()
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('upload'))
   async uploadFile(
-    @Body() body: SampleDto,
-    @UploadedFile() file: Express.Multer.File,
+    // @Body() body: SampleDto,
+    @UploadedFile() upload: Express.Multer.File,
   ) {
-    return this.uploadService.saveImage(file);
+    return this.uploadService.saveImage(upload);
   }
 
   @UseGuards(SessionAuthGuard)
