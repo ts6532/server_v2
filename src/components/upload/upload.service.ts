@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import * as path from 'path';
-import { readdir, unlink, writeFile } from 'fs/promises';
-import * as uuid from 'uuid';
+import { readdir, unlink, writeFile, access } from 'fs/promises';
 import * as fs from 'fs';
 import { IMessage } from '@src/types/general';
 import { ImageDto } from './dto/image.dto';
@@ -10,17 +9,36 @@ import { ImageDto } from './dto/image.dto';
 export class UploadService {
   private readonly _filePath = path.resolve(path.resolve(), 'uploads/images');
 
-  async saveImage(file): Promise<ImageDto> {
+  async alreadyExist(fileName: string) {
+    try {
+      await access(path.join(this._filePath, fileName));
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  async saveImage(file: Express.Multer.File): Promise<ImageDto> {
     try {
       if (!fs.existsSync(this._filePath)) {
         fs.mkdirSync(this._filePath, { recursive: true });
       }
 
-      const fileName = uuid.v4() + '.png';
+      if (await this.alreadyExist(file.originalname)) {
+        throw new HttpException(
+          { message: 'Фаил с таким именем уже существует' },
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+      await writeFile(
+        path.join(this._filePath, file.originalname),
+        file.buffer,
+      );
 
-      await writeFile(path.join(this._filePath, fileName), file.buffer);
-
-      return { url: `static/images/${fileName}`, fileName };
+      return {
+        url: `static/images/${file.originalname}`,
+        fileName: file.originalname,
+      };
     } catch (e) {
       throw new HttpException(
         { message: 'Произошла ошибка при записи файла', error: e },
