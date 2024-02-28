@@ -7,7 +7,7 @@ export class PreferencesDto {
 
   aboutImage: string;
 
-  aboutContent: object;
+  aboutContent: string;
 
   description: string;
 

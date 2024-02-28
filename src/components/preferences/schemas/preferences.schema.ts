@@ -14,8 +14,8 @@ export class Preferences {
   @Prop()
   aboutImage: string;
 
-  @Prop({ type: Object })
-  aboutContent: object;
+  @Prop()
+  aboutContent: string;
 
   @Prop()
   description: string;

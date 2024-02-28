@@ -15,10 +15,6 @@ import { ApiTags } from '@nestjs/swagger';
 import { Express } from 'express';
 import { UploadService } from './upload.service';
 
-class SampleDto {
-  name: string;
-}
-
 @ApiTags('upload')
 @Controller('upload')
 export class UploadController {
@@ -27,10 +23,7 @@ export class UploadController {
   @UseGuards(SessionAuthGuard)
   @Post()
   @UseInterceptors(FileInterceptor('upload'))
-  async uploadFile(
-    // @Body() body: SampleDto,
-    @UploadedFile() upload: Express.Multer.File,
-  ) {
+  async uploadFile(@UploadedFile() upload: Express.Multer.File) {
     return this.uploadService.saveImage(upload);
   }
 
