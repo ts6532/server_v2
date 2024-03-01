@@ -1,18 +1,15 @@
+import { UserRole } from '@components/user/dto/user-roles.dto';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Types } from 'mongoose';
+import { Document } from 'mongoose';
 
-export type UserDocument = HydratedDocument<User>;
-
+export type UserDocument = User & Document;
 @Schema()
 export class User {
-  @Prop()
-  _id: Types.ObjectId;
-
   @Prop({ required: true })
   email: string;
 
   @Prop({ required: true })
-  role: string;
+  role: UserRole;
 
   @Prop({ required: true })
   password: string;

@@ -1,22 +1,24 @@
 import { NestFactory } from '@nestjs/core';
 import helmet from 'helmet';
+import * as csurf from 'csurf';
 import * as cookieParser from 'cookie-parser';
-import * as session from 'express-session';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { AppModule } from '@components/app/app.module';
+import { AppModule } from '@src/app.module';
+import * as session from 'express-session';
+import * as passport from 'passport';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
 
   app.setGlobalPrefix('api');
 
-  app.use(cookieParser(process.env.COOKIE_SALT));
-
-  app.use(helmet());
+  app.use(cookieParser(process.env.SESSION_SECRET));
 
   app.use(
     session({
-      secret: process.env.SESSION_SALT,
+      secret: process.env.SESSION_SECRET,
+      resave: false,
       saveUninitialized: false,
       cookie: {
         secure: 'auto',
@@ -28,13 +30,35 @@ async function bootstrap() {
     }),
   );
 
-  const config = new DocumentBuilder()
-    .setTitle('Portfolio REST api')
-    .setVersion('1.0')
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
+  app.use(passport.initialize());
 
-  SwaggerModule.setup('api/docs', app, document);
+  app.use(passport.session());
+
+  app.use(helmet());
+
+  // app.use(csurf());
+
+  // app.use((req: any, res: any, next: any) => {
+  //   const token = req.csrfToken();
+  //   res.cookie('XSRF-TOKEN', token);
+  //   res.locals.csrfToken = token;
+
+  //   next();
+  // });
+
+  app.useGlobalPipes(new ValidationPipe());
+
+  SwaggerModule.setup(
+    'api/docs',
+    app,
+    SwaggerModule.createDocument(
+      app,
+      new DocumentBuilder()
+        .setTitle('Portfolio REST api')
+        .setVersion('1.0')
+        .build(),
+    ),
+  );
 
   await app.listen(process.env.PORT);
 }

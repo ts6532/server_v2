@@ -14,12 +14,12 @@ export class UserRepository extends EntityRepository<UserDocument> {
 
       if (!users) {
         const hashedPassword = await bcrypt.hash('1', 3);
+
         const newUser = new userModel({
           _id: new Types.ObjectId(),
           email: 'test@test.test',
           role: 'Administrator',
           password: hashedPassword,
-          isActivated: true,
         });
 
         await newUser.save();

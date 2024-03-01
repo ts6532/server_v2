@@ -1,6 +1,4 @@
-import { Body, Controller, Get, Put, UseGuards } from '@nestjs/common';
-
-import { SessionAuthGuard } from '@components/auth/session-auth.guard';
+import { Body, Controller, Get, Put } from '@nestjs/common';
 
 import { ApiTags } from '@nestjs/swagger';
 import { PreferencesService } from './preferences.service';
@@ -12,15 +10,12 @@ export class PreferencesController {
   constructor(private readonly preferencesService: PreferencesService) {}
 
   @Get()
-  async getPreferences(): Promise<PreferencesDto> {
+  async getPreferences() {
     return await this.preferencesService.getPreferences();
   }
 
-  @UseGuards(SessionAuthGuard)
   @Put()
-  async update(
-    @Body() preferencesDto: PreferencesDto,
-  ): Promise<PreferencesDto> {
+  async update(@Body() preferencesDto: PreferencesDto) {
     return await this.preferencesService.update(preferencesDto);
   }
 }

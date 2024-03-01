@@ -1,54 +1,18 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpException,
-  HttpStatus,
-  Post,
-  Req,
-  Session,
-} from '@nestjs/common';
+import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { LoginDataDto } from './dto/login-data.dto';
+import { LocalAuthGuard } from '@components/auth/local.auth.guard';
+import { LoginDataDto } from '@components/auth/dto/login-data.dto';
+
 @ApiTags('auth')
-@Controller()
+@Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(
-    @Body() data: LoginDataDto,
-    @Session() session: Record<string, any>,
-    @Req() req: any,
-  ): Promise<{ message: string; user: string }> {
-    const isValid = await this.authService.validateUser(
-      data.email,
-      data.password,
-    );
-
-    if (isValid) {
-      session.isAuth = true;
-      session.user = data.email;
-      session._id = req.sessionID;
-      return { message: 'Пользователь успешно авторизован', user: data.email };
-    }
-
-    throw new HttpException(
-      'Пользователь не найден. Почта и/или пароль не верны',
-      HttpStatus.NOT_FOUND,
-    );
-  }
-
-  @Get('/me')
-  async checkMe(@Req() req): Promise<{ isAuth: boolean; user: string }> {
-    if (req.session.isAuth) {
-      return { isAuth: req.session.isAuth, user: req.session.user };
-    }
-
-    throw new HttpException(
-      { message: 'Вы не авторизованы', isAuth: false },
-      HttpStatus.UNAUTHORIZED,
-    );
+  async login(@Request() req, @Body() loginDto: LoginDataDto) {
+    console.log(loginDto);
+    return req.user;
   }
 }

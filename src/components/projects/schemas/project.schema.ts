@@ -1,14 +1,11 @@
 import { Category } from '@components/categories/schemas/category.schema';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { HydratedDocument, Types } from 'mongoose';
+import mongoose from 'mongoose';
 
-export type ProjectDocument = HydratedDocument<Project>;
+export type ProjectDocument = Project & Document;
 
 @Schema()
 export class Project {
-  @Prop()
-  _id: Types.ObjectId;
-
   @Prop({ required: true })
   title: string;
 

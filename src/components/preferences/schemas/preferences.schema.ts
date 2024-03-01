@@ -1,13 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Types } from 'mongoose';
+import { Document } from 'mongoose';
 
-export type PreferencesDocument = HydratedDocument<Preferences>;
+export type PreferencesDocument = Preferences & Document;
 
 @Schema()
 export class Preferences {
-  @Prop()
-  _id: Types.ObjectId;
-
   @Prop()
   mainImage: string;
 
