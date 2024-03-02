@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PreferencesDto } from './dto/preferences.dto';
+import { PreferencesDto } from './preferences.dto';
 import { PreferencesRepository } from './preferences.repository';
 
 @Injectable()
@@ -11,7 +11,7 @@ export class PreferencesService {
   }
 
   async update(preferencesDto: PreferencesDto) {
-    const { _id, ...data } = preferencesDto;
-    return await this.preferencesRepository.update({ _id }, data);
+    const { id, ...data } = preferencesDto;
+    return await this.preferencesRepository.update({ _id: id }, data);
   }
 }

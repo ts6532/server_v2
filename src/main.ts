@@ -1,19 +1,15 @@
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import helmet from 'helmet';
-import * as csurf from 'csurf';
-import * as cookieParser from 'cookie-parser';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from '@src/app.module';
 import * as session from 'express-session';
+import helmet from 'helmet';
 import * as passport from 'passport';
-import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
 
   app.setGlobalPrefix('api');
-
-  app.use(cookieParser(process.env.SESSION_SECRET));
 
   app.use(
     session({
@@ -36,17 +32,7 @@ async function bootstrap() {
 
   app.use(helmet());
 
-  // app.use(csurf());
-
-  // app.use((req: any, res: any, next: any) => {
-  //   const token = req.csrfToken();
-  //   res.cookie('XSRF-TOKEN', token);
-  //   res.locals.csrfToken = token;
-
-  //   next();
-  // });
-
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
   SwaggerModule.setup(
     'api/docs',

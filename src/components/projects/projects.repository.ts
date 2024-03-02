@@ -1,9 +1,9 @@
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { EntityRepository } from '@database/entity.repository';
-import { Project, ProjectDocument } from './schemas/project.schema';
+import { Project, ProjectDocument } from './project.schema';
 import { HttpException, HttpStatus } from '@nestjs/common';
-import { SearchProjectDto } from '@components/projects/dto/search-project.dto';
+import { SearchProjectDto } from '@components/projects/project.dto';
 
 export class ProjectRepository extends EntityRepository<ProjectDocument> {
   constructor(
@@ -13,12 +13,9 @@ export class ProjectRepository extends EntityRepository<ProjectDocument> {
     super(projectModel);
   }
 
-  async getPopulatedProject(alias: string): Promise<ProjectDocument> {
+  async getPopulatedProject(alias: string) {
     try {
-      return await this.projectModel
-        .findOne({ alias })
-        .populate('category')
-        .lean();
+      return await this.projectModel.findOne({ alias }).populate('category');
     } catch (error) {
       throw new HttpException(
         'Ошибка при получении проекта',
@@ -27,10 +24,7 @@ export class ProjectRepository extends EntityRepository<ProjectDocument> {
     }
   }
 
-  async getProjectsList(params: SearchProjectDto): Promise<{
-    projects: Project[];
-    total: number;
-  }> {
+  async getProjectsList(params: SearchProjectDto) {
     const { filter, limit, skip } = params;
 
     const query: Record<string, any> = {};

@@ -1,75 +1,52 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { IMessage } from '@src/types/general';
-import { UpdateProjectDto } from './dto/update-project.dto';
+import { Injectable } from '@nestjs/common';
 import { ProjectRepository } from './projects.repository';
-import { PopulatedProjectDto } from '@components/projects/dto/populated-project.dto';
-import { ProjectDto } from '@components/projects/dto/project.dto';
-import { CreateProjectDto } from '@components/projects/dto/create-project.dto';
-import { SearchProjectDto } from '@components/projects/dto/search-project.dto';
-import { ListProjectDto } from '@components/projects/dto/list-project.dto';
+import { Project } from '@components/projects/project.schema';
+import { FilterQuery, QueryOptions } from 'mongoose';
+import {
+  SearchProjectDto,
+  ProjectDto,
+  CreateProjectDto,
+  UpdateProjectDto,
+  ListProjectDto,
+} from '@components/projects/project.dto';
 
 @Injectable()
 export class ProjectsService {
   constructor(private projectsRepository: ProjectRepository) {}
 
   async getProjectsList(params: SearchProjectDto): Promise<ListProjectDto> {
-    const list = await this.projectsRepository.getProjectsList(params);
-
-    return new ListProjectDto(list);
+    return await this.projectsRepository.getProjectsList(params);
   }
 
-  async getPopulatedProject(alias: string): Promise<PopulatedProjectDto> {
-    return new PopulatedProjectDto(
-      await this.projectsRepository.getPopulatedProject(alias),
-    );
+  async getPopulatedProject(alias: string) {
+    return await this.projectsRepository.getPopulatedProject(alias);
   }
 
-  async findAll(): Promise<ProjectDto[]> {
-    const res = await this.projectsRepository.find({});
-    return res.map((el) => new ProjectDto(el));
+  async findAll() {
+    return await this.projectsRepository.find({});
   }
 
-  async findOne(_id: string): Promise<ProjectDto> {
-    return new ProjectDto(await this.projectsRepository.findOne({ _id }));
+  async findOne(
+    filterQuery: FilterQuery<Project>,
+    options?: QueryOptions<Project>,
+  ): Promise<ProjectDto> {
+    return await this.projectsRepository.findOne(filterQuery, options);
+  }
+
+  async findOneById(_id: string) {
+    return this.findOne({ _id });
   }
 
   async create(createProjectDto: CreateProjectDto): Promise<ProjectDto> {
-    try {
-      return new ProjectDto(
-        await this.projectsRepository.create(createProjectDto),
-      );
-    } catch (e) {
-      throw new HttpException(
-        'Ошибка при создании проекта',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+    return await this.projectsRepository.create(createProjectDto);
   }
 
   async update(updateProjectDto: UpdateProjectDto): Promise<ProjectDto> {
-    const { _id, ...data } = updateProjectDto;
-
-    try {
-      return new ProjectDto(
-        await this.projectsRepository.update({ _id }, data),
-      );
-    } catch (error) {
-      throw new HttpException(
-        { message: 'Ошибка при обновлении проекта', error },
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+    const { id, ...data } = updateProjectDto;
+    return await this.projectsRepository.update({ _id: id }, data);
   }
 
-  async remove(_id: string): Promise<IMessage> {
-    try {
-      await this.projectsRepository.deleteMany({ _id });
-      return { message: 'Проект успешно удален' };
-    } catch (error) {
-      throw new HttpException(
-        { message: 'Ошибка при удалении проекта', error },
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+  async remove(_id: string): Promise<boolean> {
+    return await this.projectsRepository.deleteMany({ _id });
   }
 }

@@ -2,12 +2,12 @@ import { Module } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { ProjectsController } from './projects.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Project, ProjectSchema } from './schemas/project.schema';
+import { Project, ProjectSchema } from './project.schema';
 import { ProjectRepository } from './projects.repository';
 import {
   Category,
   CategorySchema,
-} from '@components/categories/schemas/category.schema';
+} from '@components/categories/category.schema';
 
 @Module({
   imports: [

@@ -1,52 +1,43 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  CategoryDto,
+  CreateCategoryDto,
+  UpdateCategoryDto,
+} from '@components/categories/category.dto';
+import { Injectable } from '@nestjs/common';
 import { CategoryRepository } from './categories.repository';
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
-import { CategoryDocument } from './schemas/category.schema';
+import { FilterQuery } from 'mongoose';
+import { Category } from '@components/categories/category.schema';
+import { QueryOptions } from 'mongoose';
 
 @Injectable()
 export class CategoriesService {
   constructor(private readonly categoryRepository: CategoryRepository) {}
 
-  async create(createCategoryDto: CreateCategoryDto) {
-    try {
-      return await this.categoryRepository.create(createCategoryDto);
-    } catch (error) {
-      throw new InternalServerErrorException(
-        error,
-        'Ошибка при создании категории',
-      );
-    }
+  async create(createCategoryDto: CreateCategoryDto): Promise<CategoryDto> {
+    return await this.categoryRepository.create(createCategoryDto);
   }
 
-  async findAll(): Promise<CategoryDocument[]> {
+  async findAll(): Promise<CategoryDto[]> {
     return this.categoryRepository.find({});
   }
 
-  async findOne(_id: string) {
-    return this.categoryRepository.findOne({ _id });
+  async findOneById(_id: string): Promise<CategoryDto> {
+    return this.findOne({ _id });
   }
 
-  async update(updateCategoryDto: UpdateCategoryDto) {
-    try {
-      const { _id, ...data } = updateCategoryDto;
-      return await this.categoryRepository.update({ _id }, data);
-    } catch (error) {
-      throw new InternalServerErrorException(
-        error,
-        'Ошибка при обновлении категории',
-      );
-    }
+  async findOne(
+    filterQuery: FilterQuery<Category>,
+    options?: QueryOptions<Category>,
+  ) {
+    return await this.categoryRepository.findOne(filterQuery, options);
   }
 
-  async remove(_id: string) {
-    try {
-      await this.categoryRepository.deleteMany({ _id });
-    } catch (error) {
-      throw new InternalServerErrorException(
-        error,
-        'Ошибка при удалении категории',
-      );
-    }
+  async update(updateCategoryDto: UpdateCategoryDto): Promise<CategoryDto> {
+    const { id, ...data } = updateCategoryDto;
+    return await this.categoryRepository.update({ _id: id }, data);
+  }
+
+  async remove(id: string): Promise<boolean> {
+    return await this.categoryRepository.deleteMany({ _id: id });
   }
 }

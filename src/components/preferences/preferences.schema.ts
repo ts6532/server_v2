@@ -1,10 +1,10 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, SchemaFactory } from '@nestjs/mongoose';
+import { Base } from '@database/base.schema';
+import { Schema } from '@database/schema.decorator';
 import { Document } from 'mongoose';
 
-export type PreferencesDocument = Preferences & Document;
-
 @Schema()
-export class Preferences {
+export class Preferences extends Base {
   @Prop()
   mainImage: string;
 
@@ -17,5 +17,7 @@ export class Preferences {
   @Prop()
   description: string;
 }
+
+export type PreferencesDocument = Preferences & Document;
 
 export const PreferencesSchema = SchemaFactory.createForClass(Preferences);

@@ -1,55 +1,81 @@
-import { Document, FilterQuery, Model, Types, UpdateQuery } from 'mongoose';
+import {
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
+import {
+  Document,
+  FilterQuery,
+  Model,
+  QueryOptions,
+  UpdateQuery,
+} from 'mongoose';
 
 export abstract class EntityRepository<T extends Document> {
-  protected constructor(protected readonly entityModel: Model<T>) {}
+  constructor(private readonly entityModel: Model<T>) {}
 
-  async findOne(
-    filterQuery: FilterQuery<T>,
-    options?: Record<string, unknown>,
-  ) {
-    return this.entityModel
+  async findOne(filterQuery: FilterQuery<T>, options?: QueryOptions<T>) {
+    return await this.entityModel
       .findOne(
         {
           ...filterQuery,
         },
         { ...options },
       )
-      .select('-__v')
-      .lean();
+      .then((res) => {
+        if (!res) throw new NotFoundException();
+        return res;
+      })
+      .catch((e) => {
+        throw new InternalServerErrorException(e);
+      });
   }
 
-  async find(filterQuery: FilterQuery<T>): Promise<T[] | null> {
-    return this.entityModel
+  async find(filterQuery: FilterQuery<T> = {}) {
+    return await this.entityModel
       .find({
         ...filterQuery,
       })
-      .select('-__v')
-      .lean();
+      .then((res) => {
+        if (!res?.length) throw new NotFoundException();
+        return res;
+      })
+      .catch((e) => {
+        throw new InternalServerErrorException(e);
+      });
   }
 
   async create(data: any) {
-    const entity = new this.entityModel({
-      ...data,
-      _id: new Types.ObjectId(),
+    return await this.entityModel.create(data).catch((e) => {
+      throw new InternalServerErrorException(e);
     });
-    return await entity.save();
   }
 
   async update(
     filterQuery: FilterQuery<T>,
     data: UpdateQuery<unknown>,
-  ): Promise<T | null> {
-    return this.entityModel
-      .findOneAndUpdate({ ...filterQuery }, data, {
+    options?: QueryOptions<T>,
+  ) {
+    const result = await this.entityModel.findOneAndUpdate(
+      { ...filterQuery },
+      data,
+      {
         new: true,
-      })
-      .lean();
+        ...options,
+      },
+    );
+
+    if (!result) throw new InternalServerErrorException();
+
+    return result;
   }
 
-  async deleteMany(filterQuery: FilterQuery<T>): Promise<boolean> {
+  async deleteMany(filterQuery: FilterQuery<T>) {
     const result = await this.entityModel.deleteMany({
       ...filterQuery,
     });
+
+    if (!result) throw new InternalServerErrorException();
+
     return result.deletedCount >= 1;
   }
 }

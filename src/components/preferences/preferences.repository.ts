@@ -1,7 +1,7 @@
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { EntityRepository } from '@database/entity.repository';
-import { Preferences, PreferencesDocument } from './schemas/preferences.schema';
+import { Preferences, PreferencesDocument } from './preferences.schema';
 
 export class PreferencesRepository extends EntityRepository<PreferencesDocument> {
   constructor(
@@ -14,7 +14,6 @@ export class PreferencesRepository extends EntityRepository<PreferencesDocument>
 
       if (!prefs) {
         const newPrefs = new prefModel({
-          _id: new Types.ObjectId(),
           mainImage: '',
           aboutImage: '',
           aboutContent: {},

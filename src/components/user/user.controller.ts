@@ -1,22 +1,23 @@
+import { User } from '@components/user/user.schema';
 import {
   Body,
   Controller,
   Delete,
   Get,
   Param,
+  Patch,
   Post,
-  Put,
-  UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { ParamsWithId } from '@src/common/mongoId.validator';
 import { UserService } from './user.service';
-import { CreateUserDto } from '@components/user/dto/create-user.dto';
-import { UpdateUserDto } from '@components/user/dto/update-user.dto';
-
-import { AuthenticatedGuard } from '@components/auth/authenticated.guard';
+import MongooseClassSerializerInterceptor from '@database/mongooseClassSerializer.interceptor';
+import { CreateUserDto, UpdateUserInfoDto } from '@components/user/user.dto';
 
 @ApiTags('users')
 @Controller('users')
+@UseInterceptors(MongooseClassSerializerInterceptor(User))
 export class UserController {
   constructor(private userService: UserService) {}
 
@@ -25,27 +26,23 @@ export class UserController {
     return this.userService.getUsers();
   }
 
-  @UseGuards(AuthenticatedGuard)
-  @Get(':_id')
-  async getUser(@Param('_id') _id: string) {
-    return this.userService.getUser({ _id });
+  @Get(':id')
+  async getUser(@Param() { id }: ParamsWithId) {
+    return this.userService.getUserById(id);
   }
 
-  @UseGuards(AuthenticatedGuard)
   @Post()
   async createUser(@Body() userData: CreateUserDto) {
     return this.userService.createUser(userData);
   }
 
-  @UseGuards(AuthenticatedGuard)
-  @Put()
-  async updateUser(@Body() userData: UpdateUserDto) {
+  @Patch('info')
+  async updateUserInfo(@Body() userData: UpdateUserInfoDto) {
     return this.userService.updateUser(userData);
   }
 
-  @UseGuards(AuthenticatedGuard)
-  @Delete(':_id')
-  async deleteUser(@Param('_id') _id: string) {
-    return this.userService.deleteUser(_id);
+  @Delete(':id')
+  async deleteUser(@Param() { id }: ParamsWithId) {
+    return this.userService.deleteUser(id);
   }
 }

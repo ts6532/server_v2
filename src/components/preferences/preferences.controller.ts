@@ -1,11 +1,13 @@
-import { Body, Controller, Get, Put } from '@nestjs/common';
-
+import { Preferences } from '@components/preferences/preferences.schema';
+import { Body, Controller, Get, Patch, UseInterceptors } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import MongooseClassSerializerInterceptor from '@database/mongooseClassSerializer.interceptor';
+import { PreferencesDto } from './preferences.dto';
 import { PreferencesService } from './preferences.service';
-import { PreferencesDto } from './dto/preferences.dto';
 
 @ApiTags('preferences')
 @Controller('preferences')
+@UseInterceptors(MongooseClassSerializerInterceptor(Preferences))
 export class PreferencesController {
   constructor(private readonly preferencesService: PreferencesService) {}
 
@@ -14,7 +16,7 @@ export class PreferencesController {
     return await this.preferencesService.getPreferences();
   }
 
-  @Put()
+  @Patch()
   async update(@Body() preferencesDto: PreferencesDto) {
     return await this.preferencesService.update(preferencesDto);
   }

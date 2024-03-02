@@ -4,16 +4,23 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
-  Put,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { ParamsWithId } from '@src/common/mongoId.validator';
 import { CategoriesService } from './categories.service';
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
+import MongooseClassSerializerInterceptor from '@database/mongooseClassSerializer.interceptor';
+import { Category } from '@components/categories/category.schema';
+import {
+  CreateCategoryDto,
+  UpdateCategoryDto,
+} from '@components/categories/category.dto';
 
 @ApiTags('categories')
 @Controller('categories')
+@UseInterceptors(MongooseClassSerializerInterceptor(Category))
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
@@ -27,18 +34,18 @@ export class CategoriesController {
     return await this.categoriesService.findAll();
   }
 
-  @Get(':_id')
-  async findOne(@Param('_id') _id: string) {
-    return await this.categoriesService.findOne(_id);
+  @Get(':id')
+  async findOne(@Param() { id }: ParamsWithId) {
+    return await this.categoriesService.findOneById(id);
   }
 
-  @Put()
+  @Patch()
   async update(@Body() updateCategoryDto: UpdateCategoryDto) {
     return this.categoriesService.update(updateCategoryDto);
   }
 
-  @Delete(':_id')
-  async remove(@Param('_id') _id: string) {
-    return this.categoriesService.remove(_id);
+  @Delete(':id')
+  async remove(@Param() { id }: ParamsWithId) {
+    return this.categoriesService.remove(id);
   }
 }

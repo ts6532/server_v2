@@ -4,72 +4,61 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
-  Put,
   Query,
-  UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
-import { ProjectsService } from './projects.service';
-import { CreateProjectDto } from './dto/create-project.dto';
-import { UpdateProjectDto } from './dto/update-project.dto';
-import { SessionAuthGuard } from '@components/auth/session-auth.guard';
-import { ProjectDto } from './dto/project.dto';
 import { ApiTags } from '@nestjs/swagger';
-import { IMessage } from '@src/types/general';
-import { PopulatedProjectDto } from './dto/populated-project.dto';
-import { SearchProjectDto } from '@components/projects/dto/search-project.dto';
-import { ListProjectDto } from '@components/projects/dto/list-project.dto';
+
+import { ProjectsService } from './projects.service';
+import {
+  CreateProjectDto,
+  SearchProjectDto,
+  UpdateProjectDto,
+} from '@components/projects/project.dto';
+import { ParamsWithId } from '@src/common/mongoId.validator';
+import { Project } from '@components/projects/project.schema';
+import MongooseClassSerializerInterceptor from '@database/mongooseClassSerializer.interceptor';
 
 @ApiTags('projects')
 @Controller('projects')
+@UseInterceptors(MongooseClassSerializerInterceptor(Project))
 export class ProjectsController {
   constructor(private readonly projectsService: ProjectsService) {}
 
   @Get('list')
-  async getProjectList(
-    @Query() params: SearchProjectDto,
-  ): Promise<ListProjectDto> {
+  async getProjectList(@Query() params: SearchProjectDto) {
     return this.projectsService.getProjectsList(params);
   }
 
-  @Get('full')
-  async getPopulatedProject(
-    @Query('alias') alias: string,
-  ): Promise<PopulatedProjectDto> {
+  @Get('full/:alias')
+  async getPopulatedProject(@Param('alias') alias: string) {
     return this.projectsService.getPopulatedProject(alias);
   }
 
-  @UseGuards(SessionAuthGuard)
   @Get()
-  async findAll(): Promise<ProjectDto[]> {
+  async findAll() {
     return await this.projectsService.findAll();
   }
 
-  @UseGuards(SessionAuthGuard)
-  @Get(':_id')
-  async findOne(@Param('_id') _id: string): Promise<ProjectDto> {
-    return await this.projectsService.findOne(_id);
+  @Get(':id')
+  async findOne(@Param() { id }: ParamsWithId) {
+    return await this.projectsService.findOneById(id);
   }
 
-  @UseGuards(SessionAuthGuard)
   @Post()
-  async create(
-    @Body() createProjectDto: CreateProjectDto,
-  ): Promise<ProjectDto> {
+  async create(@Body() createProjectDto: CreateProjectDto) {
     return await this.projectsService.create(createProjectDto);
   }
 
-  @UseGuards(SessionAuthGuard)
-  @Put()
-  async update(
-    @Body() updateProjectDto: UpdateProjectDto,
-  ): Promise<ProjectDto> {
+  @Patch()
+  async update(@Body() updateProjectDto: UpdateProjectDto) {
     return await this.projectsService.update(updateProjectDto);
   }
 
-  @UseGuards(SessionAuthGuard)
-  @Delete(':_id')
-  async remove(@Param('_id') _id: string): Promise<IMessage> {
-    return this.projectsService.remove(_id);
+  @Delete(':id')
+  async remove(@Param() { id }: ParamsWithId) {
+    return this.projectsService.remove(id);
   }
 }

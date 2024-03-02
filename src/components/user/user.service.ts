@@ -1,31 +1,34 @@
-import { UserDocument } from '@components/user/schemas/user.schema';
-import { UserRepository } from '@components/user/user.repository';
 import {
-  ConflictException,
-  Injectable,
-  InternalServerErrorException,
-} from '@nestjs/common';
+  CreateUserDto,
+  UpdateUserInfoDto,
+  UserDto,
+} from '@components/user/user.dto';
+import { UserRepository } from '@components/user/user.repository';
+import { User } from '@components/user/user.schema';
+
+import { ConflictException, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { FilterQuery } from 'mongoose';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-
 @Injectable()
 export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
 
   async getUser(
-    filterQuery: FilterQuery<UserDocument>,
+    filterQuery: FilterQuery<User>,
     options?: Record<string, unknown>,
   ) {
     return await this.userRepository.findOne(filterQuery, options);
   }
 
-  async getUsers() {
-    return await this.userRepository.find({});
+  async getUserById(id: string): Promise<UserDto> {
+    return this.getUser({ _id: id });
   }
 
-  async createUser(userData: CreateUserDto) {
+  async getUsers(): Promise<UserDto[]> {
+    return this.userRepository.find();
+  }
+
+  async createUser(userData: CreateUserDto): Promise<UserDto> {
     const alreadyExist = await this.userRepository.findOne({
       email: userData.email,
     });
@@ -35,41 +38,19 @@ export class UserService {
         `Пользователь с email ${userData.email} уже существует`,
       );
 
-    try {
-      const data = { ...userData };
+    const data = { ...userData };
 
-      data.password = await bcrypt.hash(userData.password, 3);
+    data.password = await bcrypt.hash(userData.password, 3);
 
-      return await this.userRepository.create(data);
-    } catch (e) {
-      throw new InternalServerErrorException(
-        e,
-        'Ошибка при создании пользователя',
-      );
-    }
+    return await this.userRepository.create(data);
   }
 
-  async updateUser(userData: UpdateUserDto): Promise<UserDocument> {
-    try {
-      const { _id, ...data } = userData;
-      return await this.userRepository.update({ _id }, data);
-    } catch (e) {
-      throw new InternalServerErrorException(
-        e,
-        'Ошибка при обновлении пользователя',
-      );
-    }
+  async updateUser(userData: UpdateUserInfoDto): Promise<UserDto> {
+    const { id, email, firstname } = userData;
+    return await this.userRepository.update({ _id: id }, { email, firstname });
   }
 
   async deleteUser(_id: string) {
-    try {
-      await this.userRepository.deleteMany({ _id });
-      return { message: 'Пользователь удален' };
-    } catch (e) {
-      throw new InternalServerErrorException(
-        e,
-        'Ошибка при удалении пользователя',
-      );
-    }
+    return await this.userRepository.deleteMany({ _id });
   }
 }
