@@ -5,7 +5,6 @@ import { Document } from 'mongoose';
 export type BaseDocument = Base & Document;
 
 @Schema({
-  timestamps: true,
   toJSON: {
     virtuals: true,
     transform: function (doc: any, ret: any) {
