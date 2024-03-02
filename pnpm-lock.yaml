@@ -71,6 +71,9 @@ dependencies:
   mongoose:
     specifier: ^8.2.0
     version: 8.2.0
+  mongoose-autopopulate:
+    specifier: ^1.1.0
+    version: 1.1.0(mongoose@8.2.0)
   npm-check-updates:
     specifier: ^16.14.15
     version: 16.14.15
@@ -5158,6 +5161,14 @@ packages:
       '@mongodb-js/saslprep': 1.1.4
       bson: 6.2.0
       mongodb-connection-string-url: 3.0.0
+
+  /mongoose-autopopulate@1.1.0(mongoose@8.2.0):
+    resolution: {integrity: sha512-nTlTMlu1fLQ1bmJT7ILKbZmPGt2fHErLO4UJwzMDsHSigjtUYz0l3nvFhg511QkOkZcKBRzOnPn3DmmLIUENzg==}
+    peerDependencies:
+      mongoose: 6.x || 7.x || 8.0.0-rc0 || 8.x
+    dependencies:
+      mongoose: 8.2.0
+    dev: false
 
   /mongoose@8.2.0:
     resolution: {integrity: sha512-la93n6zCYRbPS+c5N9oTDAktvREy5OT9OCljp1Tah0y3+p8UPMTAoabWaLZMdzYruOtF9/9GRf6MasaZjiZP1A==}

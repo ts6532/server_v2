@@ -14,13 +14,20 @@ function MongooseClassSerializerInterceptor(
       if (!(document instanceof Document)) {
         return document;
       }
-
       return plainToClass(classToIntercept, document.toJSON());
     }
 
     private prepareResponse(
       response: PlainLiteralObject | PlainLiteralObject[],
-    ) {
+    ): PlainLiteralObject {
+      if (!Array.isArray(response) && response.results) {
+        const results = this.prepareResponse(response.results);
+        return {
+          ...response,
+          results,
+        };
+      }
+
       if (Array.isArray(response)) {
         return response.map(this.changePlainObjectToClass);
       }

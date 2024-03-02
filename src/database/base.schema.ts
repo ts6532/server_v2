@@ -7,9 +7,10 @@ export type BaseDocument = Base & Document;
 @Schema({
   toJSON: {
     virtuals: true,
+    versionKey: false,
+    flattenObjectIds: true,
     transform: function (doc: any, ret: any) {
       delete ret._id;
-      delete ret.__v;
       return ret;
     },
   },

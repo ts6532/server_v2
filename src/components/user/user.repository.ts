@@ -1,8 +1,8 @@
+import { EntityRepository } from '@database/entity.repository';
 import { InjectModel } from '@nestjs/mongoose';
+import * as bcrypt from 'bcrypt';
 import { Model, Types } from 'mongoose';
 import { User, UserDocument } from './user.schema';
-import * as bcrypt from 'bcrypt';
-import { EntityRepository } from '@database/entity.repository';
 
 export class UserRepository extends EntityRepository<UserDocument> {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {
