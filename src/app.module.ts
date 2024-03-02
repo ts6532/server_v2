@@ -5,17 +5,19 @@ import { UserModule } from '@components/user/user.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ServeStaticModule } from '@nestjs/serve-static';
 import { SessionModule } from '@src/common/session.module';
-import { join } from 'path';
 import { AuthModule } from './components/auth/auth.module';
+import { UploadModule } from './components/upload/upload.module';
+import { join } from 'path';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     MongooseModule.forRoot(process.env.CONNECT_DB),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'images'),
+      rootPath: join(__dirname, '..', 'uploads'),
+      serveRoot: '/uploads',
     }),
     SessionModule,
     AuthModule,
@@ -23,6 +25,7 @@ import { AuthModule } from './components/auth/auth.module';
     PreferencesModule,
     CategoriesModule,
     ProjectsModule,
+    UploadModule,
   ],
 })
 export class AppModule {}
