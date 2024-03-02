@@ -1,22 +1,28 @@
+import { UserDto } from '@components/user/user.dto';
 import { UserService } from '@components/user/user.service';
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { AppErrors } from '@src/common/constants/app-errors';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
   constructor(private readonly userService: UserService) {}
 
-  async validateUser(email: string, pass: string): Promise<any> {
-    const user = await this.userService.getUser({ email });
+  async validateUser(emailToValidate: string, pass: string): Promise<UserDto> {
+    const user = await this.userService.getUser({ email: emailToValidate });
 
-    if (!user) return new BadRequestException(AppErrors.USER_NOT_EXIST);
+    if (!user) throw new NotFoundException();
 
     const passwordValid = await bcrypt.compare(pass, user.password);
 
-    if (!passwordValid)
-      return new BadRequestException(AppErrors.WRONG_PASSWORD);
-    delete user.password;
-    return user;
+    if (!passwordValid) throw new UnauthorizedException();
+
+    user.toObject();
+
+    const { email, role, id } = user;
+    return { id, email, role };
   }
 }
