@@ -17,7 +17,9 @@ export class ProjectsService {
   }
 
   async getPopulatedProject(alias: string) {
-    return await this.projectsRepository.getPopulatedProject(alias);
+    const res = await this.projectsRepository.getPopulatedProject(alias);
+
+    return res;
   }
 
   async findAll() {

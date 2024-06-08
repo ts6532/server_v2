@@ -6,10 +6,10 @@ export type BaseDocument = Base & Document;
 
 @Schema({
   toJSON: {
-    virtuals: true,
     versionKey: false,
     flattenObjectIds: true,
     transform: function (doc: any, ret: any) {
+      ret.id = ret._id;
       delete ret._id;
       return ret;
     },
@@ -20,9 +20,5 @@ export class Base {
 }
 
 const BaseSchema = SchemaFactory.createForClass(Base);
-
-BaseSchema.virtual('id').get(function (this: BaseDocument) {
-  return this._id;
-});
 
 export { BaseSchema };

@@ -7,7 +7,6 @@ import {
   Patch,
   Post,
   Query,
-  UseInterceptors,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -18,12 +17,9 @@ import {
   UpdateProjectDto,
 } from '@components/projects/project.dto';
 import { ParamsWithId } from '@src/common/mongoId.validator';
-import { Project } from '@components/projects/project.schema';
-import MongooseClassSerializerInterceptor from '@database/mongooseClassSerializer.interceptor';
 
 @ApiTags('projects')
 @Controller('projects')
-@UseInterceptors(MongooseClassSerializerInterceptor(Project))
 export class ProjectsController {
   constructor(private readonly projectsService: ProjectsService) {}
 

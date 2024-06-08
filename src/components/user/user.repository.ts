@@ -8,7 +8,6 @@ export class UserRepository extends EntityRepository<UserDocument> {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {
     super(userModel);
 
-    // инициализация первого тестового пользователя
     async function init() {
       const users = await userModel.findOne({});
 
@@ -18,7 +17,7 @@ export class UserRepository extends EntityRepository<UserDocument> {
         const newUser = new userModel({
           _id: new Types.ObjectId(),
           email: 'test@test.test',
-          role: 'Administrator',
+          role: 'ADMIN',
           password: hashedPassword,
         });
 

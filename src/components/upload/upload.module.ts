@@ -8,7 +8,19 @@ import { diskStorage } from 'multer';
   imports: [
     MulterModule.register({
       storage: diskStorage({
-        destination: './uploads',
+        destination: './u',
+        filename: function (req, file, cb) {
+          const extArray = file.mimetype.split('/');
+          const extension = extArray[extArray.length - 1];
+          cb(
+            null,
+            file.originalname.replace(/\.[^/.]+$/, '') +
+              '_' +
+              Date.now() +
+              '.' +
+              extension,
+          );
+        },
       }),
     }),
   ],

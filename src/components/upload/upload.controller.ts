@@ -1,4 +1,7 @@
+import { UploadService } from '@components/upload/upload.service';
 import {
+  BadRequestException,
+  Body,
   Controller,
   Post,
   UploadedFile,
@@ -6,12 +9,27 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 
-@Controller('upload')
+@Controller('upload/image')
 export class UploadController {
+  constructor(private uploadService: UploadService) {}
   @Post()
-  @UseInterceptors(FileInterceptor('file'))
-  handleUpload(@UploadedFile('file') file: Express.Multer.File) {
-    console.log('file', file);
-    return 'File upload API';
+  @UseInterceptors(
+    FileInterceptor('file', {
+      fileFilter: (request, file, callback) => {
+        if (!file.mimetype.includes('image')) {
+          return callback(
+            new BadRequestException('Provide a valid image'),
+            false,
+          );
+        }
+        callback(null, true);
+      },
+    }),
+  )
+  handleUpload(
+    @Body() { title, alt },
+    @UploadedFile('file') file: Express.Multer.File,
+  ) {
+    return this.uploadService.saveImage(file, { title, alt });
   }
 }

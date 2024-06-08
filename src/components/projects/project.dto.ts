@@ -16,15 +16,11 @@ export class CreateProjectDto extends OmitType(Project, ['id']) {}
 
 export class UpdateProjectDto extends PartialType(Project) {}
 
-export const listProjectFields = [
-  'id',
-  'previewImage',
-  'alias',
-  'category',
-] as const;
+export const listProjectFields = ['id', 'previewImage', 'alias'] as const;
 
 export class ListProjectDto extends PickType(Project, listProjectFields) {
-  category: string;
+  [x: string]: string;
+  categoryId: string = this.category as string;
 }
 export class ListProjectsDto {
   total: number;

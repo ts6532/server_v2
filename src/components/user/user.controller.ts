@@ -1,4 +1,4 @@
-import { User } from '@components/user/user.schema';
+import { CreateUserDto, UpdateUserInfoDto } from '@components/user/user.dto';
 import {
   Body,
   Controller,
@@ -7,20 +7,19 @@ import {
   Param,
   Patch,
   Post,
-  UseInterceptors,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ParamsWithId } from '@src/common/mongoId.validator';
 import { UserService } from './user.service';
-import MongooseClassSerializerInterceptor from '@database/mongooseClassSerializer.interceptor';
-import { CreateUserDto, UpdateUserInfoDto } from '@components/user/user.dto';
+import { AuthenticatedGuard } from '@components/auth/authenticated.guard';
 
 @ApiTags('users')
 @Controller('users')
-@UseInterceptors(MongooseClassSerializerInterceptor(User))
 export class UserController {
   constructor(private userService: UserService) {}
 
+  @UseGuards(AuthenticatedGuard)
   @Get()
   async getUsers() {
     return this.userService.getUsers();

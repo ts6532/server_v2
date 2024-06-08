@@ -3,7 +3,6 @@ import {
   ListProjectDto,
   ListProjectsDto,
   SearchProjectDto,
-  listProjectFields,
 } from '@components/projects/project.dto';
 import { EntityRepository } from '@database/entity.repository';
 import { InjectModel } from '@nestjs/mongoose';
@@ -37,7 +36,7 @@ export class ProjectRepository extends EntityRepository<ProjectDocument> {
       .find<ListProjectDto>(query)
       .limit(limit)
       .skip(skip)
-      .select([...listProjectFields]);
+      .select(['id', 'previewImage', 'alias', 'category']);
 
     return { results, total };
   }
