@@ -16,8 +16,8 @@ import { ServeStaticModule } from '@nestjs/serve-static';
     ConfigModule.forRoot({ isGlobal: true }),
     MongooseModule.forRoot(process.env.CONNECT_DB),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'uploads'),
-      serveRoot: '/uploads',
+      rootPath: join(__dirname, '..', 'u'),
+      serveRoot: '/u',
     }),
     SessionModule,
     AuthModule,

@@ -19,7 +19,7 @@ package-lock.json
 # Tests
 /coverage
 /.nyc_output
-
+/u/
 # IDEs and editors
 /.idea
 .project

@@ -15,9 +15,9 @@ export class LocalImage extends Base {
   filename: string;
 
   @Prop()
-  path: string;
+  location: string;
 }
 
-export type ProjectDocument = LocalImage & Document;
+export type LocalImageDocument = LocalImage & Document;
 
-export const ProjectSchema = SchemaFactory.createForClass(LocalImage);
+export const LocalImageSchema = SchemaFactory.createForClass(LocalImage);
