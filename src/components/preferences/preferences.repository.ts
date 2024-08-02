@@ -14,9 +14,7 @@ export class PreferencesRepository extends EntityRepository<PreferencesDocument>
 
       if (!prefs) {
         const newPrefs = new prefModel({
-          mainImage: '',
-          aboutImage: '',
-          aboutContent: {},
+          aboutContent: '',
           description: '',
         });
 

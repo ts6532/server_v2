@@ -7,4 +7,11 @@ export class UpdatePreferencesDto extends PartialType(Preferences) {
   @IsNotEmpty()
   @IsMongoId()
   id: string;
+
+  @IsMongoId()
+  aboutImage: string;
+
+
+  @IsMongoId()
+  mainImage: string;
 }

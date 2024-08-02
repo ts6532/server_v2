@@ -35,5 +35,6 @@ import {
   ],
   providers: [UploadService, LocalImageRepository],
   controllers: [UploadController],
+  exports: [UploadService]
 })
 export class UploadModule {}

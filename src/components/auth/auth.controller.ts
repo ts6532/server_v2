@@ -7,7 +7,6 @@ import { AuthService } from './auth.service';
 
 @ApiTags('auth')
 @Controller('auth')
-// @UseInterceptors(MongooseClassSerializerInterceptor(User))
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 

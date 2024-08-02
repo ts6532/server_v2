@@ -25,21 +25,25 @@ export class UserController {
     return this.userService.getUsers();
   }
 
+  @UseGuards(AuthenticatedGuard)
   @Get(':id')
   async getUser(@Param() { id }: ParamsWithId) {
     return this.userService.getUserById(id);
   }
 
+  @UseGuards(AuthenticatedGuard)
   @Post()
   async createUser(@Body() userData: CreateUserDto) {
     return this.userService.createUser(userData);
   }
 
+  @UseGuards(AuthenticatedGuard)
   @Patch('info')
   async updateUserInfo(@Body() userData: UpdateUserInfoDto) {
     return this.userService.updateUser(userData);
   }
-
+  
+  @UseGuards(AuthenticatedGuard)
   @Delete(':id')
   async deleteUser(@Param() { id }: ParamsWithId) {
     return this.userService.deleteUser(id);
